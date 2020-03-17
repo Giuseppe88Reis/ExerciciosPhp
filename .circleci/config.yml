@@ -1,30 +1,13 @@
-version: 2
-
+# Use the latest 2.1 version of CircleCI pipeline process engine. See: https://circleci.com/docs/2.0/configuration-reference
+version: 2.1
+# Use a package of configuration called an orb.
+orbs:
+  # Declare a dependency on the welcome-orb
+  welcome: circleci/welcome-orb@0.4.1
+# Orchestrate or schedule a set of jobs
 workflows:
-  version: 2
-  phpunit:
+  # Name the workflow "welcome"
+  welcome:
+    # Run the welcome/run job in its own container
     jobs:
-      - phpunit
-
-jobs:
-  phpunit:
-    working_directory: ~/exercicios
-    docker:
-      - image: chuva/circle-php:0.3.0
-    steps:
-      - checkout
-      - restore_cache:
-          keys:
-            - composer-v1-{{ checksum "composer.lock" }}
-      - run:
-          name: Install Composer dependencies
-          command: composer install -n --prefer-dist
-      - run:
-          name: Disable Xdebug
-          command: sudo rm /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini
-      - run:
-          name: Run PHPUnit tests with coverage enabled
-          command: vendor/bin/phpunit --coverage-html tests-results
-      - store_artifacts:
-          path: ~/exercicios/tests-results
-          destination: phpunit
+      - welcome/run
